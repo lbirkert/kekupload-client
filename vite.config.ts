@@ -4,6 +4,14 @@ import legacy from "@vitejs/plugin-legacy";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+	build: {
+		rollupOptions: {
+			input: {
+				main: "index.html",
+				notFound: "404.html"
+			}
+		}
+	},
 	plugins: [
 		svelte(),
 		legacy({

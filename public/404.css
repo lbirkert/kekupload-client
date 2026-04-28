@@ -27,6 +27,30 @@ body {
 	animation-delay: 0.8s;
 }
 
+#home-link {
+	animation: description 0.8s ease-in-out forwards;
+	animation-delay: 1s;
+	background-color: var(--primary);
+	border: 3px solid var(--border);
+	border-radius: 20px;
+	display: inline-block;
+	font-size: 20px;
+	margin-top: 20px;
+	opacity: 0;
+	padding: 5px 14px;
+	text-decoration: none;
+	transition: all 0.3s ease;
+}
+
+#home-link:hover {
+	background-color: var(--primary-hover);
+}
+
+#home-link:focus-visible {
+	outline: 3px solid var(--highlight);
+	outline-offset: 3px;
+}
+
 @keyframes dropdown {
 	from {
 		transform: translateY(-50vh);
