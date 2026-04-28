@@ -1,7 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Rowdies:wght@300;400&display=swap");
-
 * {
-	font-family: "Rowdies", cursive;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 :root {

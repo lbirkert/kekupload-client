@@ -1,7 +1,7 @@
 {
 	"name": "kekupload-client",
 	"private": true,
-	"version": "v2.0.2a3",
+	"version": "2.0.2",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
@@ -15,18 +15,18 @@
 	"devDependencies": {
 		"@sveltejs/vite-plugin-svelte": "^7.0.0",
 		"@tsconfig/svelte": "^5.0.8",
-		"svelte": "^5.54.1",
-		"svelte-check": "^4.4.5",
-		"tslib": "^2.8.1",
+		"svelte": "^5.55.5",
+		"svelte-check": "^4.4.6",
 		"svelte-preprocess": "^6.0.3",
-		"typescript": "^5.9.3",
-		"vite": "^8.0.1"
+		"tslib": "^2.8.1",
+		"typescript": "^6.0.3",
+		"vite": "^8.0.10"
 	},
 	"dependencies": {
-		"@vitejs/plugin-legacy": "^8.0.0",
+		"@vitejs/plugin-legacy": "^8.0.1",
 		"crypto-js": "^4.2.0",
-		"kekupload-lib-ts": "2.0.2-alpha4",
-		"prettier": "^3.8.1",
-		"terser": "^5.46.1"
+		"kekupload-lib-ts": "2.0.3",
+		"prettier": "^3.8.3",
+		"terser": "^5.46.2"
 	}
 }
