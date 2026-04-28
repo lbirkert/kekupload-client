@@ -17,10 +17,10 @@ This project is licensed under the [Mit License](https://mit-license.org/)
 
 ### Prerequirements
 
-- NPM
+- Yarn
 
 ```sh
-npm install
+yarn install
 ```
 
 <br>
@@ -34,7 +34,7 @@ Copy `src/config.default.ts` to `src/config.ts` and Change `src/config.ts`.
 ### Building
 
 ```sh
-npm run build
+yarn build
 ```
 
 The files will be located in `dist`
@@ -46,7 +46,7 @@ The files will be located in `dist`
 This will start a vite development server
 
 ```sh
-npm run dev
+yarn dev
 ```
 
 <hr>

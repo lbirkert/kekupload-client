@@ -15,10 +15,10 @@ This project is licensed under the [Mit License](https://mit-license.org/)
 
 ### Prerequirements
 
-- NPM
+- Yarn
 
 ```sh
-npm install
+yarn install
 ```
 
 <br>
@@ -32,7 +32,7 @@ Change `src/api.ts`.
 ### Building
 
 ```sh
-npm run build
+yarn build
 ```
 
 The files will be located in `dist`
@@ -44,7 +44,7 @@ The files will be located in `dist`
 If you are developing and don't want to rebuild to release mode use
 
 ```sh
-npm run dev
+yarn dev
 ```
 
 <hr>
