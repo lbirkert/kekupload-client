@@ -2,36 +2,63 @@
 	import themes from "../themes";
 	import { default_theme } from "../config";
 	import { applyTheme, getActiveTheme } from "../theme";
+	import { tick } from "svelte";
 	import { fade } from "svelte/transition";
 
 	let activeTheme = getActiveTheme(default_theme);
-    let isOpen = false;
+	let isOpen = false;
+	let isLoading = false;
+	let error = "";
+	let openButton: HTMLButtonElement;
+	let previousFocus: Element | null = null;
 
-    function openMenu() {
-        isOpen = true;
-    }
+	async function openMenu() {
+		previousFocus = document.activeElement;
+		isOpen = true;
+		await tick();
+		document.querySelector<HTMLButtonElement>(".theme.active")?.focus();
+	}
 
-    function closeMenu() {
-        isOpen = false;
-    }
+	async function closeMenu() {
+		isOpen = false;
+		await tick();
+		if (previousFocus instanceof HTMLElement) previousFocus.focus();
+		else openButton.focus();
+	}
 
-	function setTheme(index: number) {
-		activeTheme = themes[index].file;
-		applyTheme(activeTheme);
+	async function setTheme(index: number) {
+		const nextTheme = themes[index].file;
+		isLoading = true;
+		error = "";
+
+		if (await applyTheme(nextTheme)) activeTheme = nextTheme;
+		else error = "Could not load this theme. Please try again.";
+
+		isLoading = false;
+	}
+
+	function onMenuKeydown(e: KeyboardEvent) {
+		if (e.key === "Escape") closeMenu();
 	}
 </script>
 
 
-<button class="open" type="button" on:click={openMenu}>Theme</button>
+<button bind:this={openButton} class="open" type="button" aria-haspopup="dialog" on:click={openMenu}>Theme</button>
 
 {#if isOpen}
-    <div class="menu" transition:fade={{ duration: 50 }}>
+    <div class="menu" role="dialog" aria-modal="true" aria-labelledby="theme-title" tabindex="-1" transition:fade={{ duration: 50 }} on:keydown={onMenuKeydown}>
         <main>
-            <h1>Theme</h1>
+            <h1 id="theme-title">Theme</h1>
             <p>Please select the theme you want.</p>
+            {#if isLoading}
+                <p class="hint">Loading theme...</p>
+            {/if}
+            {#if error}
+                <p class="error">{error}</p>
+            {/if}
 
             {#each themes as theme, i }
-                <button type="button" class="theme" class:active={theme.file===activeTheme} on:click={()=>setTheme(i)}>
+                <button type="button" class="theme" class:active={theme.file===activeTheme} disabled={isLoading} on:click={()=>setTheme(i)}>
                     <h3>{theme.name}</h3>
                 </button>
             {/each}
@@ -45,6 +72,11 @@
         content: "active";
         color: var(--highlight);
         margin-left: 5px;
+    }
+
+    .error {
+        color: var(--highlight);
+        margin-bottom: 10px;
     }
 
     .open,.close {

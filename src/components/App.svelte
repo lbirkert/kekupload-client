@@ -5,6 +5,7 @@
     import UploadList from "./UploadList.svelte";
 
     let uploadList: UploadList;
+    let fileCount = 0;
 </script>
 
 <main>
@@ -15,11 +16,11 @@
         
     <div class="spacer"></div>
 
-    <UploadList bind:this={uploadList}/>
+    <UploadList bind:this={uploadList} onfileschange={(count)=>fileCount = count}/>
 
     <div class="spacer"></div>
 
-    <button on:click={()=>uploadList.uploadAll()}>Upload all</button>
+    <button disabled={fileCount === 0} on:click={()=>uploadList.uploadAll()}>Upload all</button>
 </main>
 
 <ThemeSelector/>
@@ -27,7 +28,6 @@
 <style>
     :global(button) {
         background-color: var(--primary);
-        outline: none;
         border: 3px solid var(--border);
         padding: 5px 10px;
         font-size: 20px;
@@ -36,8 +36,20 @@
         transition: all 0.3s ease;
     }
 
+    :global(button:disabled) {
+        cursor: not-allowed;
+        opacity: 0.55;
+    }
+
     :global(button:hover) {
         background-color: var(--primary-hover);
+    }
+
+    :global(button:focus-visible),
+    :global(input:focus-visible),
+    :global([role="button"]:focus-visible) {
+        outline: 3px solid var(--highlight);
+        outline-offset: 3px;
     }
 
     :global(input) {
@@ -45,7 +57,6 @@
         border: 1px solid var(--border);
         border-radius: 20px;
         padding: 0 10px;
-        outline: none;
         color: var(--text-secondary);
     }
 
@@ -58,16 +69,11 @@
         padding: 0;
         box-sizing: border-box;
         color: var(--text);
-        scrollbar-width: none;
-    }
-
-    :global(::-webkit-scrollbar) {
-        display: none;
     }
 
     :global(body) {
         background-color: var(--background);
-        width: 100vw;
+        width: 100%;
         height: 100vh;
         overflow-y: scroll;
         overflow-x: hidden;

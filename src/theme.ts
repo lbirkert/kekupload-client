@@ -7,26 +7,33 @@ export function getActiveTheme(defaultTheme: string) {
 }
 
 export function applyTheme(theme: string) {
-	localStorage.theme = theme;
-
 	const currentTheme = document.getElementById("theme") as HTMLLinkElement | null;
 	if (!currentTheme) {
-		return;
+		return Promise.resolve(false);
 	}
 
 	const href = getThemeHref(theme);
 	if (currentTheme.getAttribute("href") === href) {
-		return;
+		localStorage.theme = theme;
+
+		return Promise.resolve(true);
 	}
 
-	const nextTheme = document.createElement("link");
-	nextTheme.rel = "stylesheet";
-	nextTheme.href = href;
-	nextTheme.onload = () => {
-		currentTheme.href = href;
-		nextTheme.remove();
-	};
-	nextTheme.onerror = () => nextTheme.remove();
+	return new Promise<boolean>((resolve) => {
+		const nextTheme = document.createElement("link");
+		nextTheme.rel = "stylesheet";
+		nextTheme.href = href;
+		nextTheme.onload = () => {
+			currentTheme.href = href;
+			localStorage.theme = theme;
+			nextTheme.remove();
+			resolve(true);
+		};
+		nextTheme.onerror = () => {
+			nextTheme.remove();
+			resolve(false);
+		};
 
-	currentTheme.after(nextTheme);
+		currentTheme.after(nextTheme);
+	});
 }

@@ -13,6 +13,8 @@
     let isQueueing = false;
     let isRemoving = false;
     let status: number = 0;
+    let copyStatus = "";
+    let errorMessage = "";
 
     let uploadId: string | undefined;
 
@@ -28,8 +30,19 @@
         } else return size + " bytes";
     }
 
+    function makeErrorMessage(e: unknown) {
+        const networkError = "Network error. The server may be unreachable.";
+
+        if (e instanceof Error) return e.message || networkError;
+        if (typeof e === "string") return e.trim() || networkError;
+
+        const fallback = JSON.stringify(e);
+        return fallback && fallback !== "{}" ? fallback : networkError;
+    }
+
     export async function startUpload() {
         if(!isUploading && !uploadId) {
+            errorMessage = "";
             isQueueing = true;
             isUploading = true;
 
@@ -44,8 +57,7 @@
                     status = s;
                 },
                 catch: (e) => {
-                    console.log(e);
-                    if(e !== "CANCELLED") alert("Error while uploading: " + JSON.stringify(e));
+                    if(e !== "CANCELLED") errorMessage = "Upload failed: " + makeErrorMessage(e);
                 },
                 file,
                 ext,
@@ -58,11 +70,27 @@
         if(isUploading) {
             isRemoving = true;
             await config.uploader.cancel_job(entryId)
-                .catch(e => alert("Error while removing: " + JSON.stringify(e)));
+                .catch(e => errorMessage = "Could not cancel upload: " + makeErrorMessage(e));
             status = 0;
             isUploading = false;
             isRemoving = false;
         } else onclose(index);
+    }
+
+    async function copyLink() {
+        const value = uploadlink.value;
+        uploadlink.select();
+        uploadlink.setSelectionRange(0, value.length);
+
+        try {
+            if (navigator.clipboard) await navigator.clipboard.writeText(value);
+            else document.execCommand("copy");
+            copyStatus = "Copied";
+        } catch (e) {
+            copyStatus = "Copy failed";
+        }
+
+        window.setTimeout(() => copyStatus = "", 2000);
     }
 </script>
 
@@ -83,13 +111,17 @@
     </div>
     {#if uploadId}
     <div class="uploadlink">
-        <input bind:this={uploadlink} type="text" value={config.base_download + uploadId}>
-        <button on:click={()=>{
-            uploadlink.select();
-            uploadlink.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(uploadlink.value);
-        }}>Copy</button>
+        <input bind:this={uploadlink} type="text" value={config.base_download + uploadId} readonly aria-label="Upload link">
+        <button type="button" on:click={copyLink}>Copy</button>
     </div>
+    <p class="success">Uploaded</p>
+    {#if copyStatus}
+        <p class="hint">{copyStatus}</p>
+    {/if}
+    {/if}
+
+    {#if errorMessage}
+        <p class="error">{errorMessage}</p>
     {/if}
 
     {#if isUploading}
@@ -126,6 +158,17 @@
         font-size: 15px;
         padding: 0 5px;
         border-radius: 0 10px 10px 0;
+    }
+
+    .success {
+        color: var(--highlight);
+        margin-top: 5px;
+    }
+
+    .error {
+        color: var(--highlight);
+        margin-top: 5px;
+        white-space: normal;
     }
 
 

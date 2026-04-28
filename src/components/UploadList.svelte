@@ -1,6 +1,8 @@
 <script lang="ts">
     import UploadEntry from "./UploadEntry.svelte";
 
+    export let onfileschange: (count: number)=>void = () => {};
+
     let uploadEntries: Record<number, UploadEntry> = {};
 
     let files: Array<File> = [];
@@ -8,6 +10,7 @@
     function removeitem(index: number) {
         files.splice(index, 1);
         files = files;
+        onfileschange(files.length);
     }
 
     export function uploadAll() {
@@ -20,16 +23,15 @@
         for(let file of filelist) files.push(file);
 
         files = files;
+        onfileschange(files.length);
     }
 </script>
 
 {#if files.length > 0}
 <main>
-    {#each files as file, i}
-        <!-- {#key file} -->
+    {#each files as file, i (file)}
         <UploadEntry bind:this={uploadEntries[i]} file={file} index={i} onclose={() => removeitem(i)} />
         <div class="spacer"></div>
-        <!-- {/key} -->
     {/each}
 </main>
 {/if}
