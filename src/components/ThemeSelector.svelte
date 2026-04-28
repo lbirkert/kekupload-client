@@ -1,8 +1,10 @@
 <script lang="ts">
-    import themes from "../themes";
-    import { fade } from "svelte/transition";
+	import themes from "../themes";
+	import { default_theme } from "../config";
+	import { applyTheme, getActiveTheme } from "../theme";
+	import { fade } from "svelte/transition";
 
-    let activeTheme = localStorage.theme;
+	let activeTheme = getActiveTheme(default_theme);
     let isOpen = false;
 
     function openMenu() {
@@ -13,14 +15,10 @@
         isOpen = false;
     }
 
-    function setTheme(index: number) {
-        activeTheme = themes[index].file;
-        localStorage.theme = activeTheme;
-        const themeElement = document.getElementById("theme");
-        if (themeElement) {
-            themeElement.setAttribute("href", "/themes/" + activeTheme + ".css");
-        }
-    }
+	function setTheme(index: number) {
+		activeTheme = themes[index].file;
+		applyTheme(activeTheme);
+	}
 </script>
 
 
