@@ -1,10 +1,13 @@
 <script lang="ts">
+	import type { UploadListType } from "$lib/types";
 	import UploadEntry from "./UploadEntry.svelte";
 
 	let {
-		onfileschange
+		onfileschange,
+		uploadList = $bindable()
 	}: {
 		onfileschange?: (count: number) => void;
+		uploadList: UploadListType;
 	} = $props();
 
 	let uploadEntries: Record<number, Record<string, any>> = {};
@@ -28,17 +31,14 @@
 		files = files;
 		onfileschange?.(files.length);
 	}
+
+	uploadList = { removeitem, uploadAll, addFiles };
 </script>
 
 {#if files.length > 0}
 	<main>
 		{#each files as file, i (file)}
-			<UploadEntry
-				bind:this={uploadEntries[i]}
-				{file}
-				index={i}
-				onclose={() => removeitem(i)}
-			/>
+			<UploadEntry bind:this={uploadEntries[i]} {file} index={i} onclose={() => removeitem(i)} />
 			<div class="spacer"></div>
 		{/each}
 	</main>

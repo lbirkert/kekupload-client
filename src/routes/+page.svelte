@@ -2,8 +2,9 @@
 	import * as config from "$lib/config";
 	import FileSelector from "$lib/components/FileSelector.svelte";
 	import UploadList from "$lib/components/UploadList.svelte";
+	import type { UploadListType } from "$lib/types";
 
-	let uploadList: Record<string, any>;
+	let uploadList: UploadListType = $state(undefined!);
 	let fileCount = $state(0);
 </script>
 
@@ -16,7 +17,7 @@
 	<div class="spacer"></div>
 
 	<UploadList
-		bind:this={uploadList}
+		bind:uploadList={uploadList}
 		onfileschange={(count) => (fileCount = count)}
 	/>
 
