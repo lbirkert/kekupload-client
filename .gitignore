@@ -26,3 +26,4 @@ vite.config.ts.timestamp-*
 /src/lib/config.ts
 
 bun.lock
+favicon.ico
